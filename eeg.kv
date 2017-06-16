@@ -1,0 +1,149 @@
+#: import main main
+#: import ListItemButton kivy.uix.listview.ListItemButton
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+#:import MeshLinePlot kivy.garden.graph.MeshLinePlot
+
+#-------------------------------------------------------------
+# Classes
+#-------------------------------------------------------------
+<SessionButton>:
+	text: "{}   {}".format(self.session[1],self.session[0])
+	height: "20dp"
+	size_hint_y: None
+	selected_color: 0, 0, 100, 1
+    deselected_color: 0, 0, 0, 1
+	color: .5,.5,.5,1
+#	on_release: app.root.analyze_session(self.session)	
+	on_release: root.parent.parent.parent.parent.parent.analyze_session(self.session)
+
+
+#-------------------------------------------------------------
+# Tree
+#-------------------------------------------------------------
+EEGRoot:
+
+<EEGRoot>:
+	SessionOverviewForm
+	
+<SessionOverviewForm>:
+	sessions_results: sessions_results_list
+	theta_graph: graph0
+	alpha2_graph: graph1
+	beta3_graph: graph2
+	label_theta_avg: avg_theta
+	label_alpha2_avg: avg_alpha2
+	label_beta3_avg: avg_beta3
+	BoxLayout:
+		size_hint_x: 0.25
+		padding: 10
+		orientation: "vertical"
+		BoxLayout:
+			height: "40dp"
+			size_hint_y: None
+			Button:
+				text: "Refresh"
+				#size_hint_x: 20
+				on_release: root.get_session_list()
+			Button:
+				text: "History"
+				#size_hint_x: 20	
+				on_release: root.analyse_history()
+		ListView:
+			id: sessions_results_list
+			adapter:
+				ListAdapter(data=[], cls=main.SessionButton, args_converter=root.args_converter)
+	BoxLayout:
+		id: graphs
+		padding: 10
+		size_hint_x: 0.75
+		orientation: "vertical"
+		BoxLayout:
+			size_hint_y: 1
+			BoxLayout:
+				orientation: "vertical"
+				size_hint_x: 1
+				Label:
+					text: "Theta, avg"
+					color: .5,.5,.5,1
+				Label:
+					text: "Alpha2, avg"
+					color: .5,.5,.5,1
+				Label:
+					text: "Beta3, avg"
+					color: .5,.5,.5,1
+			BoxLayout:
+				orientation: "vertical"
+				size_hint_x: 1
+				Label:
+					id: avg_theta
+					text: "0"
+					color: .5,.5,.5,1
+				Label:
+					id: avg_alpha2
+					text: "0"
+					color: .5,.5,.5,1
+				Label:
+					id: avg_beta3
+					text: "0"
+					color: .5,.5,.5,1
+			BoxLayout:
+				orientation: "vertical"
+				size_hint_x: .5
+				Label:
+					text: "Raw"
+					color: .5,.5,.5,1
+				Label:
+					text: "Smoothed"
+					color: .5,.5,.5,1
+				Label:
+					text: "First/Last 5min"
+					color: .5,.5,.5,1
+			BoxLayout:
+				orientation: "vertical"
+				size_hint_x: .5
+				CheckBox:
+					group: "mode"
+					active: True
+					on_active: root.set_active(self, "raw")
+				CheckBox:
+					group: "mode"
+					on_active: root.set_active(self, "smooth")
+				CheckBox:
+					group: "mode"
+					on_active: root.set_active(self, "5min")
+		Graph:
+			size_hint_y: 1
+			id: graph0
+			xlabel: ""
+#			xmin: 0
+#			xmax: 2000
+			ylabel: "Theta"
+			ymin: 0
+			ymax: 500000
+			y_ticks_major:10000
+			y_grid_label: True
+			x_grid: True
+		Graph:
+			size_hint_y: 1
+			id: graph1
+			xlabel: ""
+#			xmin: 0
+#			xmax: 2000
+			ylabel: "Alpha2"
+			ymin: 0
+			y_ticks_major:10000
+			ymax: 200000
+			y_grid_label: True
+			x_grid: True
+		Graph:
+			size_hint_y: 1
+			id: graph2
+			xlabel: ""
+#			xmin: 0
+#			xmax: 2000
+			ylabel: "Beta3"
+			ymin: 0
+			y_ticks_major:10000
+			ymax: 50000
+			y_grid_label: True
+			x_grid: True
